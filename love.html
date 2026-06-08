@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>致王睿</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0d0010;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 60px 50px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 150, 180, 0.2);
+      border-radius: 24px;
+      backdrop-filter: blur(10px);
+      max-width: 480px;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .heart {
+      font-size: 64px;
+      animation: heartbeat 1.2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.15); }
+    }
+
+    h1 {
+      margin-top: 24px;
+      font-size: 32px;
+      font-weight: 300;
+      color: #ffb3cc;
+      letter-spacing: 4px;
+    }
+
+    .message {
+      margin-top: 28px;
+      font-size: 16px;
+      line-height: 2;
+      color: #ddb0c0;
+      letter-spacing: 1px;
+    }
+
+    .signature {
+      margin-top: 36px;
+      font-size: 13px;
+      color: #aa7788;
+      letter-spacing: 2px;
+    }
+
+    .date {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #775566;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="card">
+    <div class="heart">❤️</div>
+    <h1>王睿</h1>
+    <div class="message">
+      遇见你，是我最幸运的事。<br>
+      你的笑容让每一天都变得明亮，<br>
+      你的存在让我的世界有了颜色。<br><br>
+      喜欢你，不需要理由，<br>
+      只知道，有你在，就很好。
+    </div>
+    <div class="signature">— 一直想对你说</div>
+    <div class="date" id="date"></div>
+  </div>
+
+  <script>
+    // 日期
+    const now = new Date();
+    document.getElementById('date').textContent =
+      `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+
+    // 粒子
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const particles = Array.from({ length: 60 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 1,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: -Math.random() * 0.5 - 0.2,
+      alpha: Math.random()
+    }));
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 150, 180, ${p.alpha})`;
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+        p.alpha -= 0.002;
+        if (p.alpha <= 0 || p.y < 0) {
+          p.x = Math.random() * canvas.width;
+          p.y = canvas.height + 10;
+          p.alpha = Math.random() * 0.8 + 0.2;
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
